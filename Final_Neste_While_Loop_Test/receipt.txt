@@ -1,2 +1,4 @@
-Item Ordered: 
-Mugs#20#339
+Item Ordered#Size#Price
+Decals#6#52
+Item Ordered#Quantity#Price
+Mugs#20#200

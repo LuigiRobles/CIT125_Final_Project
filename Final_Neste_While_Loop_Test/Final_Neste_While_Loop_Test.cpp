@@ -1,5 +1,9 @@
-// Final_Neste_While_Loop_Test.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
+// CIT125 Intro to C++ Luigi Robles
+// 08-20-20 Summer Term
+// End of Term Programming Project
+// @VinylDesignsLA Order Form Program
+// Takes users order for Mugs or Decals
+// Writes a Receipt to a sequential access file
 
 #include <iostream>
 #include <string>
@@ -26,6 +30,7 @@ int main()
 	int total = 0;
 	int grandTotal = 0;
 	string itemOrdered = " ";
+	string itemAdded = " ";
 	ofstream outFile;
 	bool mugsOrderedYes = false;
 	bool decalsOrderedYes = false;
@@ -35,7 +40,6 @@ int main()
 	cout << "Please select from the following menu: " << endl;
 	displayMenu();
 	cout << endl;
-
 
 	cin >> selection; // input for menu selection
 
@@ -53,19 +57,19 @@ int main()
 			{
 				mugPrice = 20;
 				total = getTotal(mugPrice, orderQuantity);
-				cout << "Current Total: " << total << endl;
+				cout << "Current Total for this item: " << total << endl;
 			}
 			else if (orderQuantity >= 10 && orderQuantity < 20)
 			{
 				mugPrice = 15;
 				total = getTotal(mugPrice, orderQuantity);
-				cout << "Current Total: " << total << endl;
+				cout << "Current Total for this item: " << total << endl;
 			}
 			else if (orderQuantity >= 20)
 			{
 				mugPrice = 10;
 				total = getTotal(mugPrice, orderQuantity);
-				cout << "Current Total: " << total << endl;
+				cout << "Current Total for this item: " << total << endl;
 			} //end if
 
 			//nested loop to force a positive quantity ordered
@@ -89,26 +93,32 @@ int main()
 				displayMenu();
 				cin >> selection;
 				cout << endl;
-				addMoreQuantity = orderQuantity + addMoreQuantity;
+				if (selection == 'M' and orderQuantity > 0)
+				{
+					addMoreQuantity = orderQuantity + addMoreQuantity;
+					itemAdded = "Mugs";
+				}
+				else if (selection == 'D')
+					itemAdded = "Decals";
 
 				//check if addMoreQuantity is discount eligible 
 				if (addMoreQuantity > 0 && addMoreQuantity <= 9)
 				{
 					mugPrice = 20;
 					subTotal = getTotal(mugPrice, addMoreQuantity); //calculate subtotal @ regular price
-					cout << "Current Total: " << subTotal << endl;
+					cout << "Current Total for this item: " << subTotal << endl;
 				}
 				else if (addMoreQuantity >= 10 && addMoreQuantity < 20)
 				{
 					mugPrice = 15;
 					subTotal = getTotal(mugPrice, addMoreQuantity); //calculate subtotal with level 1 discount
-					cout << "Current Total: " << subTotal << endl;
+					cout << "Current Total for this item: " << subTotal << endl;
 				}
 				else if (addMoreQuantity >= 20)
 				{
 					mugPrice = 10;
 					subTotal = getTotal(mugPrice, addMoreQuantity); //calculate subtotal with level 2 discount
-					cout << "Current Total: " << subTotal << endl;
+					cout << "Current Total for this item: " << subTotal << endl;
 				}//end if
 
 			}
@@ -164,7 +174,7 @@ int main()
 	//and display Vinyl Decals Price
 	if (vinylPrice >= 0)
 		cout << "Your total for Vinyl Decals is: $ " << vinylPrice << endl;
-	
+
 	//checking to see if customer added more items to order
 	//and adding together both totals for initial order and add more total
 	if (addMoreQuantity > 0)
@@ -196,7 +206,7 @@ int main()
 			itemOrdered = "Mugs";
 			mugsOrderedYes = true;
 		}
-		else if (vinylPrice > 0)
+		if (vinylPrice > 0)
 		{
 			itemOrdered = "Decals";
 			decalsOrderedYes = true;
@@ -212,22 +222,23 @@ int main()
 
 		if (outFile.is_open()) //checking to see if file was opened successfully
 		{
-			if (itemOrdered == "Mugs") //checking to see if mugs should be saved to receipt
+			if (mugsOrderedYes == true && decalsOrderedYes == false) //checking to see if only mugs should be saved to receipt
 			{
-				outFile << "Item Ordered: " << endl;
-				outFile << itemOrdered << '#' << total << '#' << grandTotal << endl;
+				outFile << "Item Ordered"<< '#'<< "Quantity" <<'#'<<"Price"<< endl;
+				outFile << "Mugs" << '#' << total << '#' << grandTotal << endl;
 			}
-			else if (itemOrdered == "Decals") //checking to see if Vinyl Decals should be saved to receipt
+			else if (decalsOrderedYes == true && mugsOrderedYes == false) //checking to see if only Vinyl Decals should be saved to receipt
 			{
-				outFile << "Item Ordered: " << endl;
-				outFile << itemOrdered << '#' << vinylSize << '#' << vinylPrice << endl;
+				outFile << "Item Ordered"<< '#' << "Size" << '#'<< "Price" << endl;
+				outFile << "Decals" << '#' << vinylSize << '#' << vinylPrice << endl;
 			}
-			else if ((decalsOrderedYes == true) && (mugsOrderedYes == true))
+			
+			if ((decalsOrderedYes == true) && (mugsOrderedYes == true)) //checking to see if both Mugs and Decals should be saved to receipt
 			{
-				outFile << "Item Ordered: " << endl;
-				outFile << itemOrdered << '#' << vinylSize << '#' << vinylPrice << endl;
-				outFile << "Item Ordered: " << endl;
-				outFile << itemOrdered << '#' << total << '#' << grandTotal << endl;
+				outFile << "Item Ordered" << '#' << "Size" << '#' << "Price" << endl;
+				outFile << "Decals" << '#' << vinylSize << '#' << vinylPrice << endl;
+				outFile << "Item Ordered" << '#' << "Quantity" << '#' << "Price" << endl;
+				outFile << "Mugs" << '#' << orderQuantity + addMoreQuantity << '#' << total << endl;
 			}
 
 
@@ -271,5 +282,5 @@ void mugMenu()
 	cout << "10 - 19 Mugs are $15 each" << endl;
 	cout << "20 or more are $10 each" << endl;
 	cout << endl;
-}
+} //end of mugMenu function
 
